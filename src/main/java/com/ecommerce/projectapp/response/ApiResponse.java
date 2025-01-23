@@ -1,4 +1,4 @@
-package com.ecommerce.projectapp.request;
+package com.ecommerce.projectapp.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RatingRequest {
+public class ApiResponse {
 
-    private Long productId;
-    private double rating;
-
+	private String message;
+	private boolean status;
 }
