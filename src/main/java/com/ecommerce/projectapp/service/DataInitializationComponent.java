@@ -9,6 +9,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class DataInitializationComponent implements CommandLineRunner {
 
     private final UserRepository userRepository;
@@ -25,7 +27,14 @@ public class DataInitializationComponent implements CommandLineRunner {
 
         if(userRepository.findByEmail(adminUsername) == null){
 
-            User adm
+            User adminUser = new User();
+
+            adminUser.setPassword(passEncoder.encode("Beabadoobee"));
+            adminUser.setFullName("Ana");
+            adminUser.setEmail(adminUsername);
+            adminUser.setRole(USER_ROLE.ROLE_ADMIN);
+
+            User admin = userRepository.save(adminUser);
         }
     }
 }
