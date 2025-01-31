@@ -6,7 +6,7 @@ import com.ecommerce.projectapp.service.HomeCategoryService;
 import com.ecommerce.projectapp.service.SellerService;
 
 @RestController
-@RequstMapping("/admin")
+@RequestMapping("/admin")
 @RequiredArgsConstrucor
 public class AdminController {
 
