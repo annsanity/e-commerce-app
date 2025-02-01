@@ -32,16 +32,17 @@ public class HomeCategoryServiceImpl implements HomeCategoryService {
 
     @Override
     public List<HomeCategory> getAllCategories() {
+
         return homeCategoryRepository.findAll();
     }
 
     public HomeCategory updateCategory(HomeCategory category, Long id) throws Exception {
         HomeCategory existingCategory = homeCategoryRepository.findById(id)
                 .orElseThrow(() -> new Exception("Category not found"));
-        if(category.getImage()!=null){
+        if(category.getImage() != null){
             existingCategory.setImage(category.getImage());
         }
-        if(category.getCategoryId()!=null){
+        if(category.getCategoryId() != null){
             existingCategory.setCategoryId(category.getCategoryId());
         }
         return homeCategoryRepository.save(existingCategory);
