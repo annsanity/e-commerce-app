@@ -1,5 +1,6 @@
 package com.ecommerce.projectapp.service;
 
+import com.ecommerce.projectapp.exception.CouponNotValidException;
 import com.ecommerce.projectapp.model.Cart;
 import com.ecommerce.projectapp.model.Coupon;
 import com.ecommerce.projectapp.model.User;
@@ -19,5 +20,5 @@ public interface CouponService {
 
     List<Coupon> getAllCoupons();
     
-    Coupon getCouponById(Long couponId);
+    Coupon getCouponById(Long couponId) throws CouponNotValidException;
 }
