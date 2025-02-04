@@ -19,6 +19,10 @@ public class AdminController {
             Seller updatedSeller = sellerService.updateSellerAccountStatus(id, status);
             return ResponseEntity.ok(updatedSeller);
         }
+
+    
+
+    
     
 
     
