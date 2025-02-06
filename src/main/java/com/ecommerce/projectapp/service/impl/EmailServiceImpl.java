@@ -4,5 +4,5 @@ import com.ecommerce.projectapp.service.EmailService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailServiceImpl implements EmailService {
+public class EmailServiceImpl extends EmailService {
 }

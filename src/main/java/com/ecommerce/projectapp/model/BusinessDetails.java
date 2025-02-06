@@ -1,5 +1,7 @@
 package com.ecommerce.projectapp.model;
 
+import jakarta.persistence.Entity;
+import jdk.jfr.Enabled;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,12 @@
 package com.ecommerce.projectapp.service.impl;
 
+import com.ecommerce.projectapp.exception.OrderException;
+import com.ecommerce.projectapp.model.OrderItem;
 import com.ecommerce.projectapp.repository.OrderItemRepository;
+import com.ecommerce.projectapp.service.OrderItemService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 public class OrderItemServiceImpl implements OrderItemService {
 

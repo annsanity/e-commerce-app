@@ -1,6 +1,7 @@
 package com.ecommerce.projectapp.model;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

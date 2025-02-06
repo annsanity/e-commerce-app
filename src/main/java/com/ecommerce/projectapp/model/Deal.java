@@ -17,6 +17,6 @@ public class Deal {
 
     private Integer discount;
 
-    @OneToMany
+    @OneToOne
     private HomeCategory category;
 }

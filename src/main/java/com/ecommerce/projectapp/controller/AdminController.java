@@ -6,6 +6,7 @@ import com.ecommerce.projectapp.model.HomeCategory;
 import com.ecommerce.projectapp.model.Seller;
 import com.ecommerce.projectapp.service.HomeCategoryService;
 import com.ecommerce.projectapp.service.SellerService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AdminController {
 
     private final SellerService sellerService;

@@ -1,6 +1,9 @@
 package com.ecommerce.projectapp.response;
 
 import com.ecommerce.projectapp.domain.USER_ROLE;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor

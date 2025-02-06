@@ -15,7 +15,7 @@ public class SellerReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
+    @OneToOne
     private Seller seller;
 
     private Long totalEarnings = 0L;

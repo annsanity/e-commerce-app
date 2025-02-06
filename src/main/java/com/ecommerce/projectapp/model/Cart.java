@@ -28,6 +28,8 @@ public class Cart {
 
     private int totalMrpPrice;
 
+    private int totalItem;
+
     private int discount;
 
     private String couponCode;

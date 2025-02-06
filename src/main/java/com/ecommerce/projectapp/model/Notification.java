@@ -3,6 +3,8 @@ package com.ecommerce.projectapp.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
+
 @Entity
 @Data
 public class Notification {
@@ -18,7 +20,7 @@ public class Notification {
     private String message;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Data sentAt;
+    private Date sentAt;
 
     private boolean readStatus;
 }

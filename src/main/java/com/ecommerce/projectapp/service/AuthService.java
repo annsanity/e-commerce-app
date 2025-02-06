@@ -12,4 +12,5 @@ public interface AuthService {
     void sentLoginOtp(String email) throws UserException, MessagingException;
     String createUser(SignupRequest req) throws SellerException;
     AuthResponse signIn(LoginRequest req) throws SellerException;
+
 }

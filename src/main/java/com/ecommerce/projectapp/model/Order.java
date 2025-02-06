@@ -14,8 +14,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-@Getter
 public class Order {
 
     @Id
@@ -53,6 +51,7 @@ public class Order {
     private LocalDateTime orderDate = LocalDateTime.now();
 
     private LocalDateTime deliverDate = orderDate.plusDays(7);
+
 
 
 

@@ -1,9 +1,10 @@
 package com.ecommerce.projectapp.service;
 
+import com.ecommerce.projectapp.exception.StripeException;
 import com.ecommerce.projectapp.model.Order;
 import com.ecommerce.projectapp.model.PaymentOrder;
 import com.ecommerce.projectapp.model.User;
-import com.stripe.exception.StripeException;
+//import com.stripe.exception.StripeException;
 
 import java.util.Set;
 
@@ -19,4 +20,4 @@ public interface PaymentService {
 
     String createStripePaymentLink(User user, Long Amount, Long orderId) throws StripeException;
 }
-}
+
