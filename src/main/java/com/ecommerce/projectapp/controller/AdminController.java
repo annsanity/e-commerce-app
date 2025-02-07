@@ -6,8 +6,7 @@ import com.ecommerce.projectapp.model.HomeCategory;
 import com.ecommerce.projectapp.model.Seller;
 import com.ecommerce.projectapp.service.HomeCategoryService;
 import com.ecommerce.projectapp.service.SellerService;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,11 +14,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
-@AllArgsConstructor
 public class AdminController {
 
     private final SellerService sellerService;
     private final HomeCategoryService homeCategoryService;
+
+    @Autowired
+    public AdminController(SellerService sellerService, HomeCategoryService homeCategoryService) {
+        this.sellerService = sellerService;
+        this.homeCategoryService = homeCategoryService;
+    }
 
     @PatchMapping("/seller/{id}/status/{status}")
     public ResponseEntity<Seller> updateSellerStatus(

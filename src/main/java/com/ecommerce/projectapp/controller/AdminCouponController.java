@@ -6,8 +6,6 @@ import com.ecommerce.projectapp.model.User;
 import com.ecommerce.projectapp.service.CartService;
 import com.ecommerce.projectapp.service.CouponService;
 import com.ecommerce.projectapp.service.UserService;
-import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +13,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/coupons")
-@RequiredArgsConstructor
 public class AdminCouponController {
 
     private final CouponService couponService;
     private final UserService userService;
     private final CartService cartService;
+
+    public AdminCouponController(CouponService couponService, UserService userService, CartService cartService) {
+        this.couponService = couponService;
+        this.userService = userService;
+        this.cartService = cartService;
+    }
 
     @PostMapping("/apply")
     public ResponseEntity<Cart> applyCoupon(

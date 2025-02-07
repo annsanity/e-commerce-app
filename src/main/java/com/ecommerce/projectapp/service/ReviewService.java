@@ -5,8 +5,8 @@ import com.ecommerce.projectapp.model.Product;
 import com.ecommerce.projectapp.model.Review;
 import com.ecommerce.projectapp.model.User;
 import com.ecommerce.projectapp.request.CreateReviewRequest;
-
 import javax.naming.AuthenticationException;
+
 import java.util.List;
 
 public interface ReviewService {

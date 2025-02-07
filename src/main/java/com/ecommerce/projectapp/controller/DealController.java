@@ -1,6 +1,7 @@
 package com.ecommerce.projectapp.controller;
 
 import com.ecommerce.projectapp.model.Deal;
+import com.ecommerce.projectapp.response.ApiResponse;
 import com.ecommerce.projectapp.service.DealService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,29 @@ public class DealController {
 
         List<Deal> deals = dealService.getDeals();
 
-        return new ResponseEntity<>(deals, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(deals, HttpStatus.OK);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Deal> updateDeal(@PathVariable Long id, @RequestBody Deal deal) throws Exception {
+
+        Deal updatedDeal = dealService.updateDeal(deal,id);
+
+        return ResponseEntity.ok(updatedDeal);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> deleteDeals(@PathVariable Long id) throws Exception {
+
+        dealService.deleteDeal(id);
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setMessage("Deal deleted");
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+    }
+
+
+
+
 
 }
