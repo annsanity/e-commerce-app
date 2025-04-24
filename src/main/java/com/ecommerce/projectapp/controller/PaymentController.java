@@ -11,6 +11,7 @@ import com.ecommerce.projectapp.repository.CartRepository;
 import com.ecommerce.projectapp.request.ChargeRequest;
 import com.ecommerce.projectapp.response.ApiResponse;
 import com.ecommerce.projectapp.service.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/payment")
 @RequiredArgsConstructor
+@Tag(name = "Payment Processing", description = "Payment Verification and Cancellation Endpoints")
 public class PaymentController {
 
     private final UserService userService;

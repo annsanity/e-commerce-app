@@ -9,6 +9,7 @@ import com.ecommerce.projectapp.model.Wishlist;
 import com.ecommerce.projectapp.service.ProductService;
 import com.ecommerce.projectapp.service.UserService;
 import com.ecommerce.projectapp.service.WishlistService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/wishlist")
 @RequiredArgsConstructor
+@Tag(name = "Wishlist Management", description = "Wishlist Creation and Product Management Endpoints")
 public class WishListController {
 
     private final WishlistService wishlistService;

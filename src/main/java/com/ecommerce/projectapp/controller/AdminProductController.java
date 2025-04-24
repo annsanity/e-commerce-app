@@ -9,6 +9,7 @@ import com.ecommerce.projectapp.request.CreateProductRequest;
 import com.ecommerce.projectapp.response.ApiResponse;
 import com.ecommerce.projectapp.service.ProductService;
 import com.ecommerce.projectapp.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin/products")
 @RequiredArgsConstructor
+@Tag(name = "Admin Product Management", description = "Product CRUD Operations for Administrators")
 public class AdminProductController {
 
     private final ProductService productService;

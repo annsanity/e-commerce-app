@@ -13,6 +13,7 @@ import com.ecommerce.projectapp.service.CartItemService;
 import com.ecommerce.projectapp.service.CartService;
 import com.ecommerce.projectapp.service.ProductService;
 import com.ecommerce.projectapp.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/cart")
 @RequiredArgsConstructor
+@Tag(name = "Cart Management", description = "Cart Operations for Adding, Removing, and Updating Cart Items")
 public class CartController {
 
     private final CartService cartService;

@@ -3,6 +3,7 @@ package com.ecommerce.projectapp.controller;
 import com.ecommerce.projectapp.exception.ProductException;
 import com.ecommerce.projectapp.model.Product;
 import com.ecommerce.projectapp.service.ProductService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
+@Tag(name = "Product Catalog", description = "Product Browsing and Search Endpoints")
 public class ProductController {
 
     private final ProductService productService;

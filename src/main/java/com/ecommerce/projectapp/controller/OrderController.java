@@ -8,6 +8,7 @@ import com.ecommerce.projectapp.repository.PaymentOrderRepository;
 import com.ecommerce.projectapp.response.PaymentLinkResponse;
 import com.ecommerce.projectapp.service.*;
 import com.stripe.exception.StripeException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
+@Tag(name = "Order Management", description = "Order Creation, Retrieval, and Cancellation Endpoints")
 public class OrderController {
 
     private final OrderService orderService;

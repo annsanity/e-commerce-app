@@ -11,6 +11,7 @@ import com.ecommerce.projectapp.response.ApiResponse;
 import com.ecommerce.projectapp.service.ProductService;
 import com.ecommerce.projectapp.service.ReviewService;
 import com.ecommerce.projectapp.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Tag(name = "Product Reviews", description = "Review Creation, Retrieval, Update, and Deletion Endpoints")
 public class ReviewController {
 
     private final ReviewService reviewService;
