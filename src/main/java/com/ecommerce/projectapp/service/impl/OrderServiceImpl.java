@@ -1,7 +1,7 @@
 package com.ecommerce.projectapp.service.impl;
 
 import com.ecommerce.projectapp.domain.OrderStatus;
-import com.ecommerce.projectapp.domain.PaymentStatus;
+import com.ecommerce.projectapp.domain.PayoutsStatus;
 import com.ecommerce.projectapp.exception.OrderException;
 import com.ecommerce.projectapp.model.*;
 import com.ecommerce.projectapp.repository.AddressRepository;
@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
         order.setUser(user);
         order.setShippingAddress(address);
         order.setOrderStatus(OrderStatus.PENDING);
-        order.getPaymentDetails().setStatus(PaymentStatus.PENDING);
+        order.getPaymentDetails().setStatus(PayoutsStatus.PENDING);
 
         // Save order first to get an ID
         Order savedOrder = orderRepository.save(order);

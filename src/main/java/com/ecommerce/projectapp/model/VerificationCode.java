@@ -22,6 +22,4 @@ public class VerificationCode {
     @OneToOne
     private User user;
 
-    @OneToOne
-    private Seller seller;
 }

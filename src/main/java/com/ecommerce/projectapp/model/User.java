@@ -15,6 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
+@Data
 public class User {
 
     @Id
@@ -24,19 +25,20 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @Column(unique = true)
     private String email;
 
     private String fullName;
 
     private String mobile;
 
+    @Enumerated(EnumType.STRING)
     private USER_ROLE role = USER_ROLE.ROLE_CUSTOMER;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Address> addresses = new HashSet<>();
 
     @ManyToMany
     @JsonIgnore
     private Set<Coupon> usedCoupons = new HashSet<>();
-
 }

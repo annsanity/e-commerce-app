@@ -1,6 +1,6 @@
 package com.ecommerce.projectapp.model;
 
-import com.ecommerce.projectapp.domain.PaymentStatus;
+import com.ecommerce.projectapp.domain.PayoutsStatus;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,5 +15,5 @@ public class PaymentDetails {
     private String razorpayPaymentLinkId;
     private String razorpayPaymentLinkStatus;
     private String razorPaymentId;
-    private PaymentStatus status;
+    private PayoutsStatus status;
 }

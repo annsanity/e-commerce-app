@@ -1,45 +1,62 @@
 package com.ecommerce.projectapp.config;
 
-import com.ecommerce.projectapp.config.JwtConstant;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.Claims;
-import org.springframework.stereotype.Component;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
-@Component
+@Service
 public class JwtProvider {
 
-    // ✅ Using your project constant
-    private final String SECRET_KEY = JwtConstant.SECRET_KEY;
+    private SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
-    public String generateTokenWithEmail(String email) {
-        return Jwts.builder()
-                .setSubject(email)
+    public String generateToken(Authentication auth) {
+        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+        String roles = populateAuthorities(authorities);
+
+        String jwt = Jwts.builder()
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .setExpiration(new Date(new Date().getTime() + 86400000)) // 24 hrs
+                .claim("email", auth.getName())
+                .claim("authorities", roles)
+                .signWith(key)
                 .compact();
+
+        return jwt;
     }
 
-    public String getEmailFromJwtToken(String token) {
-        return getAllClaimsFromToken(token).getSubject();
-    }
-
-    public boolean isTokenValid(String token) {
-        try {
-            getAllClaimsFromToken(token);
-            return true;
-        } catch (Exception e) {
-            return false;
+    public String getEmailFromJwtToken(String jwt) {
+        // bearer token - remove "Bearer " prefix
+        if (jwt.startsWith("Bearer ")) {
+            jwt = jwt.substring(7);
         }
+
+        Claims claims = Jwts.parserBuilder().setSigningKey(key)
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody();
+
+        String email = String.valueOf(claims.get("email"));
+
+        return email;
     }
 
-    private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody();
+    public String populateAuthorities(Collection<? extends GrantedAuthority> collection) {
+        Set<String> auths = new HashSet<>();
+
+        for(GrantedAuthority authority : collection){
+            auths.add(authority.getAuthority());
+        }
+
+        return String.join(",", auths);
     }
 }

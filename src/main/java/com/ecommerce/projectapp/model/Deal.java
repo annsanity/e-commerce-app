@@ -15,8 +15,8 @@ public class Deal {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String title;
     private Integer discount;
-
-    @OneToOne
-    private HomeCategory category;
+    private String imageUrl;
+    private String categoryId;  // Just store the ID as a string
 }
