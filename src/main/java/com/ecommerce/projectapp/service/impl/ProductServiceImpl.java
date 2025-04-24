@@ -3,7 +3,6 @@ package com.ecommerce.projectapp.service.impl;
 import com.ecommerce.projectapp.exception.ProductException;
 import com.ecommerce.projectapp.model.Category;
 import com.ecommerce.projectapp.model.Product;
-import com.ecommerce.projectapp.model.Seller;
 import com.ecommerce.projectapp.repository.CategoryRepository;
 import com.ecommerce.projectapp.repository.ProductRepository;
 import com.ecommerce.projectapp.request.CreateProductRequest;
@@ -30,41 +29,17 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Product createProduct(CreateProductRequest req, Seller seller) throws ProductException {
-
+    public Product createProduct(CreateProductRequest req) throws ProductException {
+        // Calculate discount percentage
         int discountPercentage = calculateDiscountPercentage(req.getMrpPrice(), req.getSellingPrice());
 
-        Category category1 = categoryRepository.findByCategory(req.getCategory());
-        if(category1 == null){
-            Category category = new Category();
-            category.setCategoryId(req.getCategory());
-            category.setLevel(1);
-            category.setName(req.getCategory().replace("_"," "));
-            category1=categoryRepository.save(category);
-        }
+        // Ensure categories exist or create them
+        Category category1 = findOrCreateCategory(req.getCategory(), null, 1);
+        Category category2 = findOrCreateCategory(req.getCategory2(), category1, 2);
+        Category category3 = findOrCreateCategory(req.getCategory3(), category2, 3);
 
-        Category category2 = categoryRepository.findByCategory(req.getCategory2());
-        if(category2==null){
-            Category category = new Category();
-            category.setCategoryId(req.getCategory2());
-            category.setLevel(2);
-            category.setParentCategory(category1);
-            category.setName(req.getCategory2().replace("_"," "));
-            category2 = categoryRepository.save(category);
-        }
-        Category category3 = categoryRepository.findByCategory(req.getCategory3());
-        if(category3 == null){
-            Category category = new Category();
-            category.setCategoryId(req.getCategory3());
-            category.setLevel(3);
-            category.setParentCategory(category2);
-            category.setName(req.getCategory3().replace("_"," "));
-            category3 = categoryRepository.save(category);
-        }
-
-        Product product=new Product();
-
-        product.setSeller(seller);
+        // Create and save the product
+        Product product = new Product();
         product.setCategory(category3);
         product.setTitle(req.getTitle());
         product.setColor(req.getColor());
@@ -74,20 +49,31 @@ public class ProductServiceImpl implements ProductService {
         product.setImages(req.getImages());
         product.setMrpPrice(req.getMrpPrice());
         product.setSizes(req.getSizes());
+        product.setBrand(req.getBrand());
         product.setCreatedAt(LocalDateTime.now());
 
         return productRepository.save(product);
     }
 
-    private int calculateDiscountPercentage(int totalPrice, int totalDiscountPrice) {
+    private Category findOrCreateCategory(String categoryId, Category parentCategory, int level) {
+        Category category = categoryRepository.findByCategory(categoryId);
+        if (category == null) {
+            category = new Category();
+            category.setCategoryId(categoryId);
+            category.setLevel(level);
+            category.setParentCategory(parentCategory);
+            category.setName(categoryId.replace("_", " "));
+            category = categoryRepository.save(category);
+        }
+        return category;
+    }
 
+    private int calculateDiscountPercentage(int totalPrice, int totalDiscountPrice) {
         if (totalPrice <= 0) {
             return 0;
         }
-
         double discount = totalPrice - totalDiscountPrice;
         double discountPercentage = (discount / totalPrice) * 100;
-
         return (int) discountPercentage;
     }
 
@@ -99,14 +85,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(Long productId, Product product) throws ProductException {
-        productRepository.findById(productId);
+        // Ensure product exists
+        findProductById(productId);
         product.setId(productId);
         return productRepository.save(product);
     }
 
     @Override
     public Product findProductById(Long id) throws ProductException {
-        return productRepository.findById(id).orElseThrow(()-> new ProductException("Product not Found"));
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductException("Product not found with ID: " + id));
     }
 
     @Override
@@ -114,18 +102,16 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.searchProduct(query);
     }
 
-
     @Override
     public List<Product> recentlyAddedProduct() {
-        return List.of();
+        return productRepository.findTop10ByOrderByCreatedAtDesc();
     }
 
     @Override
-    public List<Product> getProductBySellerId(Long sellerId) {
-        return productRepository.findBySellerId(sellerId);
+    public List<Product> getAllProductsForAdmin() {
+        return productRepository.findAll();
     }
 
-    // VERY IMPORTANT !!!!
     @Override
     public Page<Product> getAllProduct(String category, String brand, String color, String size,
                                        Integer minPrice, Integer maxPrice, Integer minDiscount,
@@ -147,7 +133,8 @@ public class ProductServiceImpl implements ProductService {
 
             // Simple equality filters
             if (color != null) predicates.add(criteriaBuilder.equal(root.get("color"), color));
-            if (size != null) predicates.add(criteriaBuilder.equal(root.get("size"), size));
+            if (size != null) predicates.add(criteriaBuilder.like(root.get("sizes"), "%" + size + "%"));
+            if (brand != null) predicates.add(criteriaBuilder.equal(root.get("brand"), brand));
 
             // Range filters
             if (minPrice != null) predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("sellingPrice"), minPrice));
@@ -155,7 +142,16 @@ public class ProductServiceImpl implements ProductService {
 
             // Other filters
             if (minDiscount != null) predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("discountPercent"), minDiscount));
-            if (stock != null) predicates.add(criteriaBuilder.equal(root.get("stock"), stock));
+            if (stock != null) {
+                if (stock.equals("in_stock")) {
+                    predicates.add(criteriaBuilder.greaterThan(root.get("quantity"), 0));
+                } else if (stock.equals("out_of_stock")) {
+                    predicates.add(criteriaBuilder.equal(root.get("quantity"), 0));
+                }
+            }
+
+            // Only active products
+            predicates.add(criteriaBuilder.equal(root.get("active"), true));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
@@ -166,6 +162,7 @@ public class ProductServiceImpl implements ProductService {
             pageable = switch (sort) {
                 case "price_low" -> PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.by("sellingPrice").ascending());
                 case "price_high" -> PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.by("sellingPrice").descending());
+                case "newest" -> PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.by("createdAt").descending());
                 default -> PageRequest.of(pageNumber != null ? pageNumber : 0, 10, Sort.unsorted());
             };
         } else {

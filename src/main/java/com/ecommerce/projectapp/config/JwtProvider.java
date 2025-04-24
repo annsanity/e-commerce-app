@@ -1,64 +1,45 @@
 package com.ecommerce.projectapp.config;
 
-import io.jsonwebtoken.Claims;
+import com.ecommerce.projectapp.config.JwtConstant;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Service;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.Claims;
+import org.springframework.stereotype.Component;
 
-import java.net.Authenticator;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.crypto.SecretKey;
-
-@Service
+@Component
 public class JwtProvider {
 
-    private SecretKey key = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    // ✅ Using your project constant
+    private final String SECRET_KEY = JwtConstant.SECRET_KEY;
 
-    public String generateToken(Authentication auth) {
-        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-        String roles = populateAuthorities(authorities);
-
-        String jwt = Jwts.builder()
-        .setIssuedAt(new Date())
-        .setExpiration(new Date(new Date().getTime() + 86400000)) // 24 hrs
-        .claim("email", auth.getName())
-        .claim("authorities", roles)
-        .signWith(key)
-        .compact();
-
-        return jwt;
-
+    public String generateTokenWithEmail(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
     }
 
-    public String getEmailFromJwtToken(String jwt) {
-
-        // bearer 
-        jwt = jwt.substring(7);
-
-        Claims claims = Jwts.parserBuilder().setSigningKey(key)
-                        .build()
-                        .parseClaimsJws(jwt)
-                        .getBody();
-
-        String email=String.valueOf(claims.get("email"));
-		
-        return email;
+    public String getEmailFromJwtToken(String token) {
+        return getAllClaimsFromToken(token).getSubject();
     }
 
-    public String populateAuthorities(Collection<? extends GrantedAuthority> collection) {
-        Set<String> auths = new HashSet<>();
-
-        for(GrantedAuthority authority : collection){
-            auths.add(authority.getAuthority());
+    public boolean isTokenValid(String token) {
+        try {
+            getAllClaimsFromToken(token);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
+    }
 
-        return String.join(",",auths);
+    private Claims getAllClaimsFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

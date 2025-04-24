@@ -31,6 +31,10 @@ public class PaymentOrder {
     @ManyToOne
     private User user;
 
+    // We're still using Set for flexibility, though typically it will be a single order
     @OneToMany
     private Set<Order> orders = new HashSet<>();
+
+    // Timestamp when payment was completed
+    private java.time.LocalDateTime paymentCompletedAt;
 }

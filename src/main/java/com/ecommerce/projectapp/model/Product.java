@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-
 public class Product implements Serializable {
 
     @Id
@@ -35,23 +34,23 @@ public class Product implements Serializable {
     private String color;
 
     @ElementCollection
-    private List<String> images =new ArrayList<>();
+    private List<String> images = new ArrayList<>();
 
     private int numRatings;
 
     @ManyToOne
     private Category category;
 
-    @ManyToOne
-    private Seller seller;
+    // Remove seller reference
+    private String brand; // Add brand field instead
 
     private LocalDateTime createdAt;
 
-    //    @ElementCollection
-    private String Sizes;
+    private String sizes;
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
-
+    // Added for admin to manage inventory
+    private boolean active = true;
 }

@@ -53,29 +53,6 @@ public class GlobalException {
 
     }
 
-    @ExceptionHandler(SellerException.class)
-    public ResponseEntity<ErrorDetails> handleSellerException(SellerException ex, WebRequest req) {
-        ErrorDetails err= new ErrorDetails(ex.getMessage(),
-                req.getDescription(false),
-                LocalDateTime.now());
-
-        return new ResponseEntity<ErrorDetails>(err,HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(CouponNotValidException.class)
-    public ResponseEntity<ErrorDetails> CouponNotValidExceptionHandler(
-            CouponNotValidException ue,
-            WebRequest req){
-
-        ErrorDetails err= new ErrorDetails(
-                ue.getMessage(),
-                req.getDescription(false),
-                LocalDateTime.now()
-        );
-
-        return new ResponseEntity<>(err,HttpStatus.BAD_REQUEST);
-
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDetails> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException me){

@@ -23,9 +23,13 @@ public class Transaction {
     @OneToOne
     private Order order;
 
-    @ManyToOne
-    private Seller seller;
+    // Removed seller reference
 
-    private LocalDateTime date= LocalDateTime.now();
+    private LocalDateTime date = LocalDateTime.now();
 
+    // Added transaction ID from payment provider
+    private String paymentProviderTransactionId;
+
+    // Added payment method info
+    private String paymentMethod;
 }

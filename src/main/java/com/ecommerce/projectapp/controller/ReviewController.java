@@ -11,9 +11,9 @@ import com.ecommerce.projectapp.response.ApiResponse;
 import com.ecommerce.projectapp.service.ProductService;
 import com.ecommerce.projectapp.service.ReviewService;
 import com.ecommerce.projectapp.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import javax.naming.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,56 +28,47 @@ public class ReviewController {
     private final ProductService productService;
 
     @GetMapping("/products/{productId}/reviews")
-    public ResponseEntity<List<Review>> getReviewsByProductId(
-            @PathVariable Long productId) {
-
+    public ResponseEntity<List<Review>> getReviewsByProductId(@PathVariable Long productId) {
         List<Review> reviews = reviewService.getReviewsByProductId(productId);
-
         return ResponseEntity.ok(reviews);
     }
 
     @PostMapping("/products/{productId}/reviews")
-    public ResponseEntity<Review> writeReview(@RequestBody CreateReviewRequest req, @PathVariable Long productId,
-            @RequestHeader("Authorization") String jwt) throws UserException, ProductException {
+    public ResponseEntity<Review> writeReview(@Valid @RequestBody CreateReviewRequest req,
+                                              @PathVariable Long productId,
+                                              @RequestHeader("Authorization") String jwt)
+            throws UserException, ProductException {
 
         User user = userService.findUserProfileByJwt(jwt);
         Product product = productService.findProductById(productId);
         Review review = reviewService.createReview(req, user, product);
-
         return ResponseEntity.ok(review);
     }
 
     @PatchMapping("/reviews/{reviewId}")
-    public ResponseEntity<Review> updateReview(@RequestBody CreateReviewRequest req, @PathVariable Long reviewId,
-            @RequestHeader("Authorization") String jwt) throws UserException,
-            ReviewNotFoundException, javax.naming.AuthenticationException {
+    public ResponseEntity<Review> updateReview(@Valid @RequestBody CreateReviewRequest req,
+                                               @PathVariable Long reviewId,
+                                               @RequestHeader("Authorization") String jwt)
+            throws UserException, ReviewNotFoundException {
 
         User user = userService.findUserProfileByJwt(jwt);
-
         Review review = reviewService.updateReview(
                 reviewId,
                 req.getReviewText(),
                 req.getReviewRating(),
                 user.getId()
         );
-
         return ResponseEntity.ok(review);
     }
 
     @DeleteMapping("/reviews/{reviewId}")
-    public ResponseEntity<ApiResponse> deleteReview(
-            @PathVariable Long reviewId,
-            @RequestHeader("Authorization") String jwt) throws UserException,
-            ReviewNotFoundException, AuthenticationException {
+    public ResponseEntity<ApiResponse> deleteReview(@PathVariable Long reviewId,
+                                                    @RequestHeader("Authorization") String jwt)
+            throws UserException, ReviewNotFoundException {
 
         User user = userService.findUserProfileByJwt(jwt);
-
         reviewService.deleteReview(reviewId, user.getId());
-        ApiResponse res = new ApiResponse();
-        res.setMessage("Review deleted successfully");
-        res.setStatus(true);
-
+        ApiResponse res = new ApiResponse("Review deleted successfully", true);
         return ResponseEntity.ok(res);
-
     }
 }

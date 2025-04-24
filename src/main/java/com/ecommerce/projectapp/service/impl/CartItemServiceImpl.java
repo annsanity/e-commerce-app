@@ -6,59 +6,42 @@ import com.ecommerce.projectapp.model.CartItem;
 import com.ecommerce.projectapp.model.User;
 import com.ecommerce.projectapp.repository.CartItemRepository;
 import com.ecommerce.projectapp.service.CartItemService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CartItemServiceImpl implements CartItemService {
 
-    private CartItemRepository cartItemRepository;
+    private final CartItemRepository cartItemRepository;
 
     @Override
     public CartItem updateCartItem(Long userId, Long id, CartItem cartItem) throws CartItemException, UserException {
+        CartItem item = cartItemRepository.findById(id)
+                .orElseThrow(() -> new CartItemException("Item not found. ID: " + id));
 
-        CartItem item = findCartItemById(id);
         User cartItemUser = item.getCart().getUser();
-
-        if (cartItemUser.getId().equals(userId)) {
-
-            item.setQuantity(cartItem.getQuantity());
-            item.setMrpPrice(item.getQuantity() * item.getProduct().getMrpPrice());
-            item.setSellingPrice(item.getQuantity() * item.getProduct().getSellingPrice());
-
-            return cartItemRepository.save(item);
+        if (!cartItemUser.getId().equals(userId)) {
+            throw new CartItemException("Unauthorized to update this item.");
         }
-        else {
-            throw new CartItemException("Item cannot be updated!");
-        }
+
+        item.setQuantity(cartItem.getQuantity());
+        item.setMrpPrice(item.getQuantity() * item.getProduct().getMrpPrice());
+        item.setSellingPrice(item.getQuantity() * item.getProduct().getSellingPrice());
+
+        return cartItemRepository.save(item);
     }
 
     @Override
     public void removeCartItem(Long userId, Long cartItemId) throws CartItemException, UserException {
+        CartItem cartItem = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new CartItemException("Item not found. ID: " + cartItemId));
 
-        CartItem cartItem = findCartItemById(cartItemId);
-        User cartItemUser=cartItem.getCart().getUser();
-
-        if (cartItemUser.getId().equals(userId)) {
-            cartItemRepository.deleteById(cartItem.getId());
-        }
-        else {
-            throw new UserException("Item cannot be removed!");
-        }
-    }
-
-    @Override
-    public CartItem findCartItemById(Long cartItemId) throws CartItemException {
-
-        Optional<CartItem> optional = cartItemRepository.findById(cartItemId);
-
-        if (optional.isPresent()) {
-            return optional.get();
+        User cartItemUser = cartItem.getCart().getUser();
+        if (!cartItemUser.getId().equals(userId)) {
+            throw new UserException("Unauthorized to remove this item.");
         }
 
-        throw new CartItemException("Item not found. : " + cartItemId);
+        cartItemRepository.deleteById(cartItem.getId());
     }
 }

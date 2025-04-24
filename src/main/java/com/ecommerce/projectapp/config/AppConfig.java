@@ -21,14 +21,16 @@ import java.util.Collections;
 @EnableWebSecurity
 public class AppConfig {
 
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(Authorize -> Authorize
-                        .requestMatchers("/api/admin/**").hasAnyRole("SHOP_OWNER", "ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/products/*/reviews").permitAll()
                         .anyRequest().permitAll()
-
                 )
                 .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())
@@ -43,8 +45,10 @@ public class AppConfig {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration cfg = new CorsConfiguration();
-                cfg.setAllowedOrigins(Arrays.asList("https://my-ecommerce-bazaar.vercel.app",
-                        "http://localhost:3000"));
+                cfg.setAllowedOrigins(Arrays.asList(
+                        "https://vendorhub-ecommerce.vercel.app",
+                        "http://localhost:3000"
+                ));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
                 cfg.setAllowedHeaders(Collections.singletonList("*"));
@@ -53,16 +57,15 @@ public class AppConfig {
                 return cfg;
             }
         };
-
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
     public RestTemplate restTemplate() {
-            return new RestTemplate();
+        return new RestTemplate();
     }
 }

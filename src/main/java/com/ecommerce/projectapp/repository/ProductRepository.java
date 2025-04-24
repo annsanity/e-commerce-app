@@ -8,13 +8,19 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ProductRepository extends JpaRepository<Product, Long> , JpaSpecificationExecutor<Product> {
+public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
-    List<Product> findBySellerId(Long shopId);
+    // Find products by brand
+    List<Product> findByBrand(String brand);
 
-@Query("SELECT p from Product p WHERE (:query IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :query, '%')))" +
-        "OR (:query IS NULL OR LOWER(p.category.name) LIKE LOWER(CONCAT('%', :query, '%')))" +
-        "OR (:query IS NULL OR LOWER(p.category.categoryId) LIKE LOWER(CONCAT('%', :query, '%')))"
-)
-List<Product> searchProduct(@Param("query") String query);
+    // Find recent products
+    List<Product> findTop10ByOrderByCreatedAtDesc();
+
+    // Search products
+    @Query("SELECT p from Product p WHERE (:query IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :query, '%')))" +
+            "OR (:query IS NULL OR LOWER(p.brand) LIKE LOWER(CONCAT('%', :query, '%')))" +
+            "OR (:query IS NULL OR LOWER(p.category.name) LIKE LOWER(CONCAT('%', :query, '%')))" +
+            "OR (:query IS NULL OR LOWER(p.category.categoryId) LIKE LOWER(CONCAT('%', :query, '%')))"
+    )
+    List<Product> searchProduct(@Param("query") String query);
 }
