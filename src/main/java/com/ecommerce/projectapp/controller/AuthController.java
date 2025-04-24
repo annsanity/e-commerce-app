@@ -5,6 +5,7 @@ import com.ecommerce.projectapp.request.LoginRequest;
 import com.ecommerce.projectapp.request.SignupRequest;
 import com.ecommerce.projectapp.response.AuthResponse;
 import com.ecommerce.projectapp.service.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Authentication", description = "Authentication Management Endpoints")
 public class AuthController {
 
     private final AuthService authService;
